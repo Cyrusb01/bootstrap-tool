@@ -407,6 +407,7 @@ def monthly_table(results_list):
         agg_rows.append(temp)
 
     length = len(year_rows)
+
     
     list_4_df = [] #appends the rows in the correct order
     for i in range(length):
