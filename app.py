@@ -9,7 +9,7 @@ import dash_bootstrap_components as dbc
 import pandas as pd
 import datetime
 import bt
-from functions import onramp_colors, onramp_template, line_chart, scatter_plot, stats_table
+from functions import balance_table, monthly_returns_table, monthly_table, onramp_colors, onramp_template, line_chart, scatter_plot, stats_table, short_stats_table
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}]
@@ -284,6 +284,35 @@ def DisplayStats():
 
     return stats        
 
+def DisplayReturnStats():
+    stats = dbc.Card(
+        dbc.CardBody([
+                dcc.Graph(
+                id = "balance_table",
+                style= {"responsive": True}
+                ),
+                dcc.Graph(
+                id = "return_stats",
+                style= {"responsive": True}
+                )
+                            
+        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "24rem"}
+    )
+
+    return stats      
+
+def DisplayMonthTable():
+    stats = dbc.Card(
+        dbc.CardBody([
+            dcc.Graph(
+                id = "month_table",
+                style= {"responsive": True}
+            )
+        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "50rem"}
+    )
+
+    return stats        
+
 
 
 
@@ -376,6 +405,33 @@ app.layout = dbc.Container([
         ], width = 3),
     ]),
 
+    #Column Headers Returns Breakdown Returns Recap 
+    dbc.Row([
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody("Returns Breakdown"), 
+                className= "text-center mr-4 mb-4"),
+        width = 9
+        ),
+
+        dbc.Col(
+            dbc.Card(
+                dbc.CardBody("Returns Recap"), 
+                className= "text-center mr-4 mb-4"),
+        width = 3
+        ),
+    ]), 
+
+    dbc.Row([
+        dbc.Col([
+            DisplayMonthTable()
+        ], width = 9),
+        
+        dbc.Col([
+            DisplayReturnStats()
+        ], width = 3),
+
+    ]),
 ], fluid=True)
 
 
@@ -383,7 +439,13 @@ app.layout = dbc.Container([
     [Output('pie_chart', 'figure'),
     Output('line_chart', 'figure'),
     Output('scatter_plot', 'figure'),
-    Output("stats_table", "figure")],
+    Output("stats_table", "figure"),
+    Output("month_table", "figure"),
+    Output("balance_table", "figure"),
+    Output("return_stats", "figure")
+    ],
+    
+    
     [Input('Ticker1', 'value'),
     Input('Allocation1', 'value'),
     Input('Ticker2', 'value'),
@@ -401,9 +463,13 @@ def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3,
     fig = px.pie( values = percent_list, names = stock_list, color = stock_list, title="Portfolio Allocation", template= onramp_template, hole = .3, height = 300)
     
     ##################################################### SETTING UP DATA #############################################################################################
+    stock_choice_1 = stock_choice_1.lower()
+    stock_choice_2 = stock_choice_2.lower()
+    stock_choice_3 = stock_choice_3.lower()
+
     stock_list = stock_choice_1 +',' + stock_choice_2 + ',' + stock_choice_3
     
-    data = bt.get(stock_list) 
+    data = bt.get(stock_list, start = '2017-01-01') 
 
     #need the '-' in cryptos to get the data, but bt needs it gone to work
     stock_choice_1 = stock_choice_1.replace('-', '')
@@ -434,7 +500,17 @@ def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3,
 
     fig_stats = stats_table(results_list)
 
-    return fig, fig_line, fig_scat, fig_stats
+    fig_month_table = monthly_table(results_list)
+
+    fig_month_table.update_layout(height = 760)
+
+    fig_balance_table = balance_table(results, results_control)
+
+    fig_balance_table.update_layout(height = 100)
+
+    fig_returns_stats = short_stats_table(results_list)
+
+    return fig, fig_line, fig_scat, fig_stats, fig_month_table, fig_balance_table, fig_returns_stats
 
    
 
