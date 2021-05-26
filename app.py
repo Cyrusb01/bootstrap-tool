@@ -518,4 +518,4 @@ def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3,
 
 
 if __name__=='__main__':
-    app.run_server(debug=True, port=8000)
+    app.run_server(debug=True)
