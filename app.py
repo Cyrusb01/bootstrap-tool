@@ -2,13 +2,15 @@ import dash
 from dash_bootstrap_components._components.CardBody import CardBody
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Output, Input
+from dash.dependencies import Output, Input, State
 import plotly.express as px
 import plotly.graph_objs as go
 import dash_bootstrap_components as dbc
 import pandas as pd
 import datetime
 import bt
+import time
+
 from functions import balance_table, monthly_returns_table, monthly_table, onramp_colors, onramp_template, line_chart, scatter_plot, stats_table, short_stats_table
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
                 meta_tags=[{'name': 'viewport',
@@ -105,6 +107,7 @@ def Inputs():
                             type= 'text',
                             value = "spy",
                             placeholder= "Enter Ticker",
+                            debounce = True,
                             size = "10"
 
                         ),
@@ -178,6 +181,7 @@ def Inputs():
                         dcc.Input(
                             id = "Ticker4",
                             type= 'text',
+                            value = 'tsla',
                             placeholder= "Enter Ticker",
                             size = "10"
 
@@ -189,6 +193,7 @@ def Inputs():
                         dcc.Input(
                             id = "Allocation4",
                             type= 'text',
+                            value = "20",
                             placeholder= "Enter Allocation %"
 
                         ), width={'size':1, 'offset':2},
@@ -207,7 +212,20 @@ def Inputs():
                             type= 'text',
                             placeholder= "Rebalance Threshold %"
 
-                        ), width={'size':1, 'offset':2},
+                        ), width={'size':1, 'offset':2}, className= "mb-4"
+                    ),
+                ]),
+
+                #Submit Button
+                dbc.Row([
+                    
+                    dbc.Col(
+                        html.Button(
+                            id = "submit_button",
+                            children= "Create Strategy",
+                            n_clicks=0
+
+                        ), width={'size':12, 'offset':1},
                     ),
                 ]),
                 
@@ -296,7 +314,7 @@ def DisplayReturnStats():
                 style= {"responsive": True}
                 )
                             
-        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "24rem"}
+        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
     )
 
     return stats      
@@ -445,20 +463,22 @@ app.layout = dbc.Container([
     Output("return_stats", "figure")
     ],
     
+    Input("submit_button", "n_clicks"),
+    State('Ticker1', 'value'),
+    State('Allocation1', 'value'),
+    State('Ticker2', 'value'),
+    State('Allocation2', 'value'),
+    State('Ticker3', 'value'),
+    State('Allocation3', 'value'),
+    State('Ticker4', 'value'),
+    State('Allocation4', 'value')
     
-    [Input('Ticker1', 'value'),
-    Input('Allocation1', 'value'),
-    Input('Ticker2', 'value'),
-    Input('Allocation2', 'value'),
-    Input('Ticker3', 'value'),
-    Input('Allocation3', 'value')
-    ]
 )
-def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3, alloc3):
-
+def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3, alloc3, stock_choice_4, alloc4 ):
+    start = time.time()
     ####################################################### PIE CHART ##########################################################################################
-    stock_list = [stock_choice_1, stock_choice_2, stock_choice_3]
-    percent_list = [float(alloc1)/100, float(alloc2)/100, float(alloc3)/100]
+    stock_list = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
+    percent_list = [float(alloc1)/100, float(alloc2)/100, float(alloc3)/100, float(alloc4)/100]
 
     fig = px.pie( values = percent_list, names = stock_list, color = stock_list, title="Portfolio Allocation", template= onramp_template, hole = .3, height = 300)
     
@@ -466,19 +486,27 @@ def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3,
     stock_choice_1 = stock_choice_1.lower()
     stock_choice_2 = stock_choice_2.lower()
     stock_choice_3 = stock_choice_3.lower()
+    stock_choice_4 = stock_choice_4.lower()
 
-    stock_list = stock_choice_1 +',' + stock_choice_2 + ',' + stock_choice_3
     
+    stock_list = stock_choice_1 +',' + stock_choice_2 + ',' + stock_choice_3 + ',' + stock_choice_4
+    
+    data_s = time.time()
     data = bt.get(stock_list, start = '2017-01-01') 
+    data_e = time.time()
+    print("Finished Data ", stock_choice_1, ":", data_e - data_s)
 
     #need the '-' in cryptos to get the data, but bt needs it gone to work
+    data_st = time.time()
     stock_choice_1 = stock_choice_1.replace('-', '')
     stock_choice_2 = stock_choice_2.replace('-', '')
     stock_choice_3 = stock_choice_3.replace('-', '')
+    stock_choice_4 = stock_choice_4.replace('-', '')
 
-    your_strategy = stock_choice_1.upper()  + '-' +  stock_choice_2.upper() +  '-' + stock_choice_3.upper()
+    your_strategy = stock_choice_1.upper()  + '-' +  stock_choice_2.upper() +  '-' + stock_choice_3.upper() +  '-' + stock_choice_4.upper()
 
-    stock_dic = {stock_choice_1: float(alloc1)/100, stock_choice_2: float(alloc2)/100, stock_choice_3: float(alloc3)/100} #dictonary for strat
+    print(your_strategy)
+    stock_dic = {stock_choice_1: float(alloc1)/100, stock_choice_2: float(alloc2)/100, stock_choice_3: float(alloc3)/100, stock_choice_4: float(alloc4)/100} #dictonary for strat
     
     strategy_ = bt.Strategy(your_strategy, 
                               [ 
@@ -492,7 +520,9 @@ def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3,
     results = bt.run(test)
     
     results_list = [results, results_control, results_spy, results_agg]
-
+    
+    data_et = time.time()
+    print("Finished Strategy ", stock_choice_1, ":", data_et - data_st)
     ################################################### LINE CHART ########################################################################################################
     fig_line = line_chart(results_list)
 
@@ -510,6 +540,10 @@ def update_graph(stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3,
 
     fig_returns_stats = short_stats_table(results_list)
 
+    fig_returns_stats.update_layout(height = 320)
+
+    end = time.time()
+    print(stock_choice_1, ":", end - start)
     return fig, fig_line, fig_scat, fig_stats, fig_month_table, fig_balance_table, fig_returns_stats
 
    
