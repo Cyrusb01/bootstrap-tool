@@ -1,5 +1,6 @@
 import dash
 from dash_bootstrap_components._components.CardBody import CardBody
+from dash_bootstrap_components._components.Row import Row
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Output, Input, State
@@ -261,7 +262,7 @@ def DisplayPie():
             dcc.Graph(
                 id = "pie_chart"
             )
-        ]), style= {"height": "22rem"}
+        ]), className= "mb-4", style= {"height": "22rem"}
     )
 
     return pie
@@ -273,7 +274,7 @@ def DisplayLineChart():
                 id = "line_chart",
                 style= {"responsive": True}
             )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "24rem"}
+        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
     )
 
     return line        
@@ -285,7 +286,7 @@ def DisplayScatter():
                 id = "scatter_plot",
                 style= {"responsive": True}
             )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "24rem"}
+        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
     )
 
     return scat        
@@ -297,7 +298,7 @@ def DisplayStats():
                 id = "stats_table",
                 style= {"responsive": True}
             )
-        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "24rem"}
+        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
     )
 
     return stats        
@@ -346,109 +347,205 @@ app.layout = dbc.Container([
     ),
 
     #Column Headers Input Dashboard Description Portfolio Allocaiton
-    dbc.Row([
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Inputs"), 
-                className= "text-center mr-4 mb-4"),
-        width = 3
-        ),
+    # dbc.Row([
+    #     # dbc.Col(
+    #     #     dbc.Card(
+    #     #         dbc.CardBody("Inputs"), 
+    #     #         className= "text-center mr-4 mb-4"),
+    #     # xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
+    #     # ),
 
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Dashboard Description"), 
-                className= "text-center mr-4 mb-4"),
-        width = 6
-        ),
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Dashboard Description"), 
+    #             className= "text-center mr-4 mb-4"),
+    #     xs = 12, sm = 12, md = 6, lg = 6, xl = 6 
+    #     ),
 
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Portfolio Allocation"), 
-                className= "text-center mb-4"),
-        width = 3
-        ),
-    ]), 
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Portfolio Allocation"), 
+    #             className= "text-center mb-4"),
+    #     xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
+    #     ),
+    # ]), 
     
-    # Actually Inputs Descriptions Pie 
+    # Inputs | Description | Pie Chart 
     dbc.Row([
         dbc.Col([
-            Inputs()
-        ], width = 3),
+            
+            dbc.Row([
+                dbc.Col(
+                dbc.Card(
+                    dbc.CardBody("Inputs"), 
+                    className= "text-center mr-4 mb-4"),
+            #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
+            ),
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    Inputs()
+                ],  ),
+            ]),
+        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3),
         
         dbc.Col([
-            Description()
-        ], width = 6),
-
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody("Dashboard Description"), 
+                        className= "text-center mr-4 mb-4"),
+                #xs = 12, sm = 12, md = 6, lg = 6, xl = 6 
+                ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    Description()
+                ],  ),
+            ),
+        ], xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
         dbc.Col([
-            DisplayPie()
-        ], width = 3),
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody("Portfolio Allocation"), 
+                        className= "text-center mb-4"),
+                #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
+                ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    DisplayPie()
+                ]),
+            )
+        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3 )
     ]),
 
+
     #Column Headers Porfolio Performance Risk Vs. Return Performance Statistics
-    dbc.Row([
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Portfolio Performance"), 
-                className= "text-center mr-4 mb-4"),
-        width = 5
-        ),
+    # dbc.Row([
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Portfolio Performance"), 
+    #             className= "text-center mr-4 mb-4"),
+    #     width = 5
+    #     ),
 
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Risk Vs. Return"), 
-                className= "text-center mr-4 mb-4"),
-        width = 4
-        ),
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Risk Vs. Return"), 
+    #             className= "text-center mr-4 mb-4"),
+    #     width = 4
+    #     ),
 
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Performance Statistics"), 
-                className= "text-center mb-4"),
-        width = 3
-        ),
-    ]), 
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Performance Statistics"), 
+    #             className= "text-center mb-4"),
+    #     width = 3
+    #     ),
+    # ]), 
 
-    #Line chart Scatter 
+    #Line Chart | Scatter Plot | Stats Table 
     dbc.Row([
         dbc.Col([
-            DisplayLineChart()
-        ], width = 5),
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody("Portfolio Performance"), 
+                        className= "text-center mr-4 mb-4"),
+                #width = 5
+                ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    DisplayLineChart()
+                ],),
+            ),
+        ], xs = 12, sm = 12, md = 12, lg = 5, xl = 5),
+
+
+        dbc.Col([
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody("Risk Vs. Return"), 
+                        className= "text-center mr-4 mb-4"),
+                #width = 4
+                ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    DisplayScatter()
+                ],),
+            ),
+        ], xs = 12, sm = 12, md = 12, lg = 4, xl = 4),
         
         dbc.Col([
-            DisplayScatter()
-        ], width = 4),
-
-        dbc.Col([
-            DisplayStats()
-        ], width = 3),
+            dbc.Row(
+                dbc.Col(
+                dbc.Card(
+                    dbc.CardBody("Performance Statistics"), 
+                    className= "text-center mb-4"),
+            #width = 3
+            ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    DisplayStats()
+                ]),
+            )
+        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3)
     ]),
 
     #Column Headers Returns Breakdown Returns Recap 
-    dbc.Row([
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Returns Breakdown"), 
-                className= "text-center mr-4 mb-4"),
-        width = 9
-        ),
+    # dbc.Row([
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Returns Breakdown"), 
+    #             className= "text-center mr-4 mb-4"),
+    #     width = 9
+    #     ),
 
-        dbc.Col(
-            dbc.Card(
-                dbc.CardBody("Returns Recap"), 
-                className= "text-center mr-4 mb-4"),
-        width = 3
-        ),
-    ]), 
+    #     dbc.Col(
+    #         dbc.Card(
+    #             dbc.CardBody("Returns Recap"), 
+    #             className= "text-center mr-4 mb-4"),
+    #     width = 3
+    #     ),
+    # ]), 
 
     dbc.Row([
         dbc.Col([
-            DisplayMonthTable()
-        ], width = 9),
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody("Returns Breakdown"), 
+                        className= "text-center mr-4 mb-4"),
+                #width = 9
+                ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    DisplayMonthTable()
+                ]),
+            ),
+        ], xs = 12, sm = 12, md = 12, lg = 9, xl = 9),
         
         dbc.Col([
-            DisplayReturnStats()
-        ], width = 3),
-
+            dbc.Row(
+                dbc.Col(
+                    dbc.Card(
+                        dbc.CardBody("Returns Recap"), 
+                        className= "text-center mr-4 mb-4"),
+                ),
+            ),
+            dbc.Row(
+                dbc.Col([
+                    DisplayReturnStats()
+                ]),
+            )
+        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3)
     ]),
 ], fluid=True)
 
@@ -552,4 +649,4 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
 
 
 if __name__=='__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port = 8000)

@@ -93,7 +93,8 @@ def line_chart(results_list):
 
     fig = px.line(result_final, labels=dict(index="Click Legend Icons to Toggle Viewing", value="", variable=""),
                     title="Portfolio Performance",
-                    template= onramp_template, height = 350
+                    template= onramp_template
+                    #height = 350
                     )
     
     fig.update_yaxes( # the y-axis is in dollars
@@ -236,7 +237,8 @@ def scatter_plot(results_list):
                             },
                             title="Risk Vs. Return", 
                             template= onramp_template,
-                            width = 530, height = 350)
+                            #width = 530, height = 350
+                            )
     
     return fig
     
