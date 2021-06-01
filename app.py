@@ -11,6 +11,7 @@ import pandas as pd
 import datetime
 import bt
 import time
+from bt_algos import WeighSpecified, RebalanceAssetThreshold
 
 from functions import balance_table, monthly_returns_table, monthly_table, onramp_colors, onramp_template, line_chart, scatter_plot, stats_table, short_stats_table
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
@@ -22,6 +23,17 @@ server = app.server
 # Layout section: Bootstrap (https://hackerthemes.com/bootstrap-cheatsheet/)
 # ************************************************************************
 
+onramp_colors = {
+    "dark_blue" : "#131C4F",
+    "seafoam"   : "#00EEAD",
+    "gray"      : "#B0B6BD",
+    "light_blue": "#2F61D5",
+    "pink"      : "#A90BFE",
+    "purple"    : "#7540EE",
+    "cyan"      : "#3FB6DC",
+    "orange"    : "#FF7052",
+    "white"     : "white"
+}
 
 def get_data():
   s_data = bt.get('spy,agg', start = '2017-01-01') #took out gold for now because of error
@@ -109,10 +121,11 @@ def Inputs():
                             value = "spy",
                             placeholder= "Enter Ticker",
                             debounce = True,
-                            size = "10"
+                            size = "10",
+                            #style = {"width"}
 
                         ),
-                    width={'size':1}, className= "mr-5 mb-4"
+                    width={'size':1}, className= "mr-5 mb-4", 
                     ), 
 
                     dbc.Col(
@@ -230,7 +243,7 @@ def Inputs():
                     ),
                 ]),
                 
-            ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}
+            ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"], inverse= True,
         )
 
     return inputs_
@@ -251,7 +264,7 @@ def Description():
 
                     ])
                 
-                ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}
+                ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"], inverse= True
     )
 
     return descript
@@ -259,10 +272,13 @@ def Description():
 def DisplayPie():
     pie = dbc.Card(
         dbc.CardBody([
+            
+            dcc.Loading( id = "loading_pie", children=
             dcc.Graph(
                 id = "pie_chart"
             )
-        ]), className= "mb-4", style= {"height": "22rem"}
+            )
+        ]), className= "mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"]
     )
 
     return pie
@@ -270,11 +286,12 @@ def DisplayPie():
 def DisplayLineChart():
     line = dbc.Card(
         dbc.CardBody([
+            dcc.Loading(id = "loading_line", children=
             dcc.Graph(
                 id = "line_chart",
                 style= {"responsive": True}
-            )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
+            ))
+        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
     )
 
     return line        
@@ -282,11 +299,13 @@ def DisplayLineChart():
 def DisplayScatter():
     scat = dbc.Card(
         dbc.CardBody([
+            dcc.Loading(id = "loading-scatter", children=
             dcc.Graph(
                 id = "scatter_plot",
                 style= {"responsive": True}
             )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
+            )
+        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
     )
 
     return scat        
@@ -294,11 +313,13 @@ def DisplayScatter():
 def DisplayStats():
     stats = dbc.Card(
         dbc.CardBody([
+            dcc.Loading(id = "loading_stats", children=
             dcc.Graph(
                 id = "stats_table",
                 style= {"responsive": True}
             )
-        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
+            )
+        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
     )
 
     return stats        
@@ -306,16 +327,21 @@ def DisplayStats():
 def DisplayReturnStats():
     stats = dbc.Card(
         dbc.CardBody([
+            dcc.Loading(id = "loading_return1", children= 
                 dcc.Graph(
                 id = "balance_table",
                 style= {"responsive": True}
-                ),
+                )
+            ),
+            dcc.Loading(id = "loading_returns2", children=
                 dcc.Graph(
                 id = "return_stats",
                 style= {"responsive": True}
                 )
+            )
+            
                             
-        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}
+        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
     )
 
     return stats      
@@ -323,11 +349,13 @@ def DisplayReturnStats():
 def DisplayMonthTable():
     stats = dbc.Card(
         dbc.CardBody([
+            dcc.Loading( id = "loading_month", children=
             dcc.Graph(
                 id = "month_table",
                 style= {"responsive": True}
             )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "50rem"}
+            )
+        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "50rem"}, color= onramp_colors["dark_blue"]
     )
 
     return stats        
@@ -342,33 +370,10 @@ app.layout = dbc.Container([
         dbc.Col(
             dbc.Card(
                 dbc.CardBody("Custom Strategy Dashboard"), 
-            className="text-center mb-4"), 
+            className="text-center mb-4", color= onramp_colors["dark_blue"], inverse= True,), 
         width = 12)
     ),
 
-    #Column Headers Input Dashboard Description Portfolio Allocaiton
-    # dbc.Row([
-    #     # dbc.Col(
-    #     #     dbc.Card(
-    #     #         dbc.CardBody("Inputs"), 
-    #     #         className= "text-center mr-4 mb-4"),
-    #     # xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
-    #     # ),
-
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Dashboard Description"), 
-    #             className= "text-center mr-4 mb-4"),
-    #     xs = 12, sm = 12, md = 6, lg = 6, xl = 6 
-    #     ),
-
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Portfolio Allocation"), 
-    #             className= "text-center mb-4"),
-    #     xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
-    #     ),
-    # ]), 
     
     # Inputs | Description | Pie Chart 
     dbc.Row([
@@ -378,7 +383,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                 dbc.Card(
                     dbc.CardBody("Inputs"), 
-                    className= "text-center mr-4 mb-4"),
+                    className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
             #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
             ),
             ]),
@@ -394,7 +399,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody("Dashboard Description"), 
-                        className= "text-center mr-4 mb-4"),
+                        className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
                 #xs = 12, sm = 12, md = 6, lg = 6, xl = 6 
                 ),
             ),
@@ -409,7 +414,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody("Portfolio Allocation"), 
-                        className= "text-center mb-4"),
+                        className= "text-center mb-4", color= onramp_colors["dark_blue"], inverse= True,),
                 #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
                 ),
             ),
@@ -421,31 +426,6 @@ app.layout = dbc.Container([
         ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3 )
     ]),
 
-
-    #Column Headers Porfolio Performance Risk Vs. Return Performance Statistics
-    # dbc.Row([
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Portfolio Performance"), 
-    #             className= "text-center mr-4 mb-4"),
-    #     width = 5
-    #     ),
-
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Risk Vs. Return"), 
-    #             className= "text-center mr-4 mb-4"),
-    #     width = 4
-    #     ),
-
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Performance Statistics"), 
-    #             className= "text-center mb-4"),
-    #     width = 3
-    #     ),
-    # ]), 
-
     #Line Chart | Scatter Plot | Stats Table 
     dbc.Row([
         dbc.Col([
@@ -453,7 +433,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody("Portfolio Performance"), 
-                        className= "text-center mr-4 mb-4"),
+                        className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
                 #width = 5
                 ),
             ),
@@ -470,7 +450,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody("Risk Vs. Return"), 
-                        className= "text-center mr-4 mb-4"),
+                        className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
                 #width = 4
                 ),
             ),
@@ -486,7 +466,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                 dbc.Card(
                     dbc.CardBody("Performance Statistics"), 
-                    className= "text-center mb-4"),
+                    className= "text-center mb-4", color= onramp_colors["dark_blue"], inverse= True,),
             #width = 3
             ),
             ),
@@ -521,7 +501,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody("Returns Breakdown"), 
-                        className= "text-center mr-4 mb-4"),
+                        className= "text-center mr-4 mb-4 shadow-lg rounded", color= onramp_colors["dark_blue"], inverse= True,),
                 #width = 9
                 ),
             ),
@@ -537,7 +517,7 @@ app.layout = dbc.Container([
                 dbc.Col(
                     dbc.Card(
                         dbc.CardBody("Returns Recap"), 
-                        className= "text-center mr-4 mb-4"),
+                        className= "text-center mb-4 ", color= onramp_colors["dark_blue"], inverse= True,),
                 ),
             ),
             dbc.Row(
@@ -549,7 +529,9 @@ app.layout = dbc.Container([
     ]),
 ], fluid=True)
 
-
+##############################################################################################################################################################
+############ CALLBACKS WITHOUT REBALANCE
+##############################################################################################################################################################
 @app.callback(
     [Output('pie_chart', 'figure'),
     Output('line_chart', 'figure'),
@@ -568,10 +550,11 @@ app.layout = dbc.Container([
     State('Ticker3', 'value'),
     State('Allocation3', 'value'),
     State('Ticker4', 'value'),
-    State('Allocation4', 'value')
+    State('Allocation4', 'value'),
+    State('Rebalance', 'value')
     
 )
-def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3, alloc3, stock_choice_4, alloc4 ):
+def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3, alloc3, stock_choice_4, alloc4, rebalance = 1.2):
     start = time.time()
     ####################################################### PIE CHART ##########################################################################################
     stock_list = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
@@ -591,7 +574,7 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
     data_s = time.time()
     data = bt.get(stock_list, start = '2017-01-01') 
     data_e = time.time()
-    print("Finished Data ", stock_choice_1, ":", data_e - data_s)
+    print("Finished Data", stock_choice_1, ":", data_e - data_s)
 
     #need the '-' in cryptos to get the data, but bt needs it gone to work
     data_st = time.time()
@@ -602,14 +585,17 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
 
     your_strategy = stock_choice_1.upper()  + '-' +  stock_choice_2.upper() +  '-' + stock_choice_3.upper() +  '-' + stock_choice_4.upper()
 
-    print(your_strategy)
     stock_dic = {stock_choice_1: float(alloc1)/100, stock_choice_2: float(alloc2)/100, stock_choice_3: float(alloc3)/100, stock_choice_4: float(alloc4)/100} #dictonary for strat
-    
+    print(rebalance)
+    if(rebalance == None or rebalance == ""):
+        rebalance = 1.2
+    rebalance = float(rebalance)
     strategy_ = bt.Strategy(your_strategy, 
                               [ 
                               bt.algos.RunDaily(),
                               bt.algos.SelectAll(), 
                               bt.algos.WeighSpecified(**stock_dic),
+                              RebalanceAssetThreshold(threshold = rebalance),
                               bt.algos.RunMonthly(),
                               bt.algos.Rebalance()]) #Creating strategy
 
@@ -619,7 +605,7 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
     results_list = [results, results_control, results_spy, results_agg]
     
     data_et = time.time()
-    print("Finished Strategy ", stock_choice_1, ":", data_et - data_st)
+    print("Finished Strategy", stock_choice_1, ":", data_et - data_st)
     ################################################### LINE CHART ########################################################################################################
     fig_line = line_chart(results_list)
 
@@ -640,13 +626,11 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
     fig_returns_stats.update_layout(height = 320)
 
     end = time.time()
-    print(stock_choice_1, ":", end - start)
+    print("Finished Everything", stock_choice_1, ":", end - start)
     return fig, fig_line, fig_scat, fig_stats, fig_month_table, fig_balance_table, fig_returns_stats
-
-   
-
-
-
+##############################################################################################################################################################
+############ CALLBACKS WITH REBALANCE
+##############################################################################################################################################################
 
 if __name__=='__main__':
     app.run_server(debug=True, port = 8000)

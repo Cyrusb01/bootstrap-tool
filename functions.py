@@ -290,6 +290,12 @@ def balance_table(results, results_con):
                                             line_color = 'black',
                                             font = dict(color = 'black', size = 11),
                                             fill_color = '#f7f7f7' )) ])
+    fig.update_layout(
+            {
+                "plot_bgcolor": "rgba(0, 0, 0, 0)",  # Transparent
+                "paper_bgcolor": "rgba(0, 0, 0, 0)",
+            }
+        )
     fig.update_layout(margin = dict(l=1, r=0, t=0, b=0))
     
     return fig
@@ -321,6 +327,12 @@ def short_stats_table(results_list):
                                         height = 30,
                                         font = dict(color = 'black'),
                                         fill_color = '#f7f7f7' )) ])
+    fig.update_layout(
+            {
+                "plot_bgcolor": "rgba(0, 0, 0, 0)",  # Transparent
+                "paper_bgcolor": "rgba(0, 0, 0, 0)",
+            }
+        )
     fig.update_layout(margin = dict(l=2, r=0, t=0, b=0))
     return fig
 
