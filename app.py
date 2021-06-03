@@ -13,7 +13,7 @@ import bt
 import time
 from bt_algos import WeighSpecified, RebalanceAssetThreshold
 
-from functions import balance_table, monthly_returns_table, monthly_table, onramp_colors, onramp_template, line_chart, scatter_plot, stats_table, short_stats_table
+from functions import balance_table, monthly_table, onramp_colors, onramp_template, line_chart, scatter_plot, stats_table, short_stats_table
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}]
@@ -121,11 +121,10 @@ def Inputs():
                             value = "spy",
                             placeholder= "Enter Ticker",
                             debounce = True,
-                            size = "10",
-                            #style = {"width"}
+                            style = {"width" : "100%"}
 
                         ),
-                    width={'size':1}, className= "mr-5 mb-4", 
+                    width={'size':4}, className= " mb-4", 
                     ), 
 
                     dbc.Col(
@@ -133,9 +132,10 @@ def Inputs():
                             id = "Allocation1",
                             value = "40",
                             type= 'text',
-                            placeholder= "Enter Allocation %"
+                            placeholder= "Enter Allocation %",
+                            style = {"width" : "100%"}
 
-                        ), width={'size':1, 'offset':2},
+                        ), width={'size': 6, 'offset':1},
                     ),
                 ]),
 
@@ -147,10 +147,10 @@ def Inputs():
                             type= 'text',
                             value = 'agg',
                             placeholder= "Enter Ticker",
-                            size = "10"
+                            style = {"width" : "100%"}
 
                         ),
-                    width={'size':1}, className= "mr-5 mb-4"
+                    width={'size':4}, className= "mb-4"
                     ), 
 
                     dbc.Col(
@@ -158,9 +158,10 @@ def Inputs():
                             id = "Allocation2",
                             type= 'text',
                             value = "20",
-                            placeholder= "Enter Allocation %"
+                            placeholder= "Enter Allocation %",
+                            style = {"width" : "100%"}
 
-                        ), width={'size':1, 'offset':2},
+                        ), width={'size':6, 'offset':1},
                     ),
                 ]),
 
@@ -172,10 +173,10 @@ def Inputs():
                             type= 'text',
                             value = 'btc-usd',
                             placeholder= "Enter Ticker",
-                            size = "10"
+                            style = {"width" : "100%"}
 
                         ),
-                    width={'size':1}, className= "mr-5 mb-4"
+                    width={'size':4}, className= "mb-4"
                     ), 
 
                     dbc.Col(
@@ -183,9 +184,10 @@ def Inputs():
                             id = "Allocation3",
                             type= 'text',
                             value = '20',
-                            placeholder= "Enter Allocation %"
+                            placeholder= "Enter Allocation %",
+                            style = {"width" : "100%"}
 
-                        ), width={'size':1, 'offset':2},
+                        ), width={'size':6, 'offset':1},
                     ),
                 ]),
 
@@ -197,10 +199,10 @@ def Inputs():
                             type= 'text',
                             value = 'tsla',
                             placeholder= "Enter Ticker",
-                            size = "10"
+                            style = {"width" : "100%"}
 
                         ),
-                    width={'size':1}, className= "mr-5 mb-4"
+                    width={'size':4}, className= "mb-4"
                     ), 
 
                     dbc.Col(
@@ -208,25 +210,27 @@ def Inputs():
                             id = "Allocation4",
                             type= 'text',
                             value = "20",
-                            placeholder= "Enter Allocation %"
+                            placeholder= "Enter Allocation %",
+                            style = {"width" : "100%"}
 
-                        ), width={'size':1, 'offset':2},
+                        ), width={'size':6, 'offset':1},
                     ),
                 ]),
 
                 #Inputs 5 
                 dbc.Row([
                     dbc.Col(
-                    width={'size':1}, className= "mr-5 mb-4" #Empty Col for Rebalance 
+                    width={'size':4}, className= "mb-4" #Empty Col for Rebalance 
                     ), 
 
                     dbc.Col(
                         dcc.Input(
                             id = "Rebalance",
                             type= 'text',
-                            placeholder= "Rebalance Threshold %"
+                            placeholder= "Rebalance Threshold %",
+                            style = {"width" : "100%"}
 
-                        ), width={'size':1, 'offset':2}, className= "mb-4"
+                        ), width={'size':6, 'offset':1}, className= "mb-4"
                     ),
                 ]),
 
@@ -237,9 +241,10 @@ def Inputs():
                         html.Button(
                             id = "submit_button",
                             children= "Create Strategy",
-                            n_clicks=0
+                            n_clicks=0,
+                            style= {"width": "100%"}
 
-                        ), width={'size':12, 'offset':1},
+                        ), width={'size':12, 'offset':0},
                     ),
                 ]),
                 
@@ -252,17 +257,13 @@ def Description():
 
     descript = dbc.Card(
                 dbc.CardBody([
-                    dbc.Row([
-                        dbc.Col([
-                            html.P(children= "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannotavoid mediating disputes."),
+                   
+                            html.P(children= "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannotavoid mediating disputes.", 
+                            style = {"fontSize": "vmin" }),
                             
-                            html.P(children= "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannotavoid mediating disputes.")
+                            html.P(children= "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannotavoid mediating disputes.",
+                            style = {"fontSize": "vmin" })
                             
-                            #className= "text-center")
-                            
-                        ])
-
-                    ])
                 
                 ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"], inverse= True
     )
@@ -377,22 +378,6 @@ app.layout = dbc.Container([
     
     # Inputs | Description | Pie Chart 
     dbc.Row([
-        dbc.Col([
-            
-            dbc.Row([
-                dbc.Col(
-                dbc.Card(
-                    dbc.CardBody("Inputs"), 
-                    className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-            #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
-            ),
-            ]),
-            dbc.Row([
-                dbc.Col([
-                    Inputs()
-                ],  ),
-            ]),
-        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3),
         
         dbc.Col([
             dbc.Row(
@@ -409,6 +394,23 @@ app.layout = dbc.Container([
                 ],  ),
             ),
         ], xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+
+        dbc.Col([
+            
+            dbc.Row([
+                dbc.Col(
+                dbc.Card(
+                    dbc.CardBody("Inputs"), 
+                    className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
+            #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
+            ),
+            ]),
+            dbc.Row([
+                dbc.Col([
+                    Inputs()
+                ],  ),
+            ]),
+        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3),
         dbc.Col([
             dbc.Row(
                 dbc.Col(
@@ -557,10 +559,10 @@ app.layout = dbc.Container([
 def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stock_choice_3, alloc3, stock_choice_4, alloc4, rebalance = 1.2):
     start = time.time()
     ####################################################### PIE CHART ##########################################################################################
-    stock_list = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
+    stock_list_pie = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
     percent_list = [float(alloc1)/100, float(alloc2)/100, float(alloc3)/100, float(alloc4)/100]
 
-    fig = px.pie( values = percent_list, names = stock_list, color = stock_list, title="Portfolio Allocation", template= onramp_template, hole = .3, height = 300)
+    fig = px.pie( values = percent_list, names = stock_list_pie, color = stock_list_pie, title="Portfolio Allocation", template= onramp_template, hole = .3, height = 300)
     
     ##################################################### SETTING UP DATA #############################################################################################
     stock_choice_1 = stock_choice_1.lower()
@@ -583,10 +585,22 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
     stock_choice_3 = stock_choice_3.replace('-', '')
     stock_choice_4 = stock_choice_4.replace('-', '')
 
-    your_strategy = stock_choice_1.upper()  + '-' +  stock_choice_2.upper() +  '-' + stock_choice_3.upper() +  '-' + stock_choice_4.upper()
 
+    #Makes strategy name not include usd
+    stock_list_strat = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
+    your_strategy = "" 
+
+    for i in range(len(stock_list_strat)):
+        if("usd" in stock_list_strat[i]):
+            your_strategy += stock_list_strat[i].replace('usd', '').upper()
+        else:
+            your_strategy += stock_list_strat[i].upper()
+        your_strategy += '-'
+
+    your_strategy = your_strategy[0:-1]
+    
     stock_dic = {stock_choice_1: float(alloc1)/100, stock_choice_2: float(alloc2)/100, stock_choice_3: float(alloc3)/100, stock_choice_4: float(alloc4)/100} #dictonary for strat
-    print(rebalance)
+    
     if(rebalance == None or rebalance == ""):
         rebalance = 1.2
     rebalance = float(rebalance)

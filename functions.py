@@ -119,27 +119,6 @@ def line_chart(results_list):
     # fig.update_layout(margin = dict(l=0, r=0, t=20, b=10))
     return fig
 
-def plot_pie(stock_list, percent_list, pie_colors = ['#66F3EC', '#67F9AF', '#F9C515']):
-    labels = []
-    percents = []
-    #pie_colors = ['#66F3EC', '#67F9AF', '#F9C515']
-
-    for x, y in zip(stock_list, percent_list): #labels show the percent in the legend 
-        labels.append(x.upper())
-        percents.append(y)
-    
-    fig, ax1 = plt.subplots()
-    ax1.pie(percents,
-            shadow=True, 
-            startangle=90,
-            colors = pie_colors,
-            wedgeprops={"edgecolor":"white",'linewidth': 1, 'linestyle': 'solid', 'antialiased': True},
-            autopct='%1.0f%%' )
-    plt.legend( labels, bbox_to_anchor=(0.5, -0.05), framealpha=0, ncol = 3, loc="upper center")
-    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-
-    return fig
-
 def plotly_pie(stock_list, percent_list, pie_colors = ['#66F3EC', '#67F9AF', '#F9C515']):
     
     fig = px.pie( values = percent_list, names = stock_list, color = stock_list,
@@ -189,30 +168,6 @@ def display_stats_combined(results_list): #works for list of two results df
 
     return stats_combined
 
-def monthly_returns_table(results_list):
-    
-    key = results_list[0]._get_backtest(0)
-    res_mon = results_list[0][key].return_table
-    return res_mon
-    keyc = results_list[1]._get_backtest(0)
-    res_con = results_list[1][keyc].return_table
-
-    something = pd.concat([res_mon, res_con], axis =0) #making the collumns go jan jan feb feb
-    # something.columns = ['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug',  'Sep', 'Oct',  'Nov', 'Dec', 'YTD', 'Jan2', 'Feb2',  'Mar2',  'Apr2',  'May2',  'Jun2',  'Jul2',  'Aug2',  'Sep2', 'Oct2',  'Nov2', 'Dec2', 'YTD2']
-    # column_names = ['Jan', 'Jan2', 'Feb', 'Feb2', 'Mar', 'Mar2', 'Apr', 'Apr2', 'May', 'May2', 'Jun', 'Jun2', 'Jul', 'Jul2', 'Aug', 'Aug2', 'Sep', 'Sep2', 'Oct', 'Oct2', 'Nov', 'Nov2', 'Dec', 'Dec2', 'YTD', 'YTD2']
-    # something = something.reindex(columns = column_names)
-    # something.columns = ['Jan', 'Jan ', 'Feb', 'Feb ', 'Mar', 'Mar ', 'Apr', 'Apr ', 'May', 'May ', 'Jun', 'Jun ', 'Jul', 'Jul ', 'Aug', 'Aug ', 'Sep', 'Sep ', 'Oct', 'Oct ', 'Nov', 'Nov ', 'Dec', 'Dec ', 'YTD', 'YTD '] 
-    
-def highlight_cols(x): #highlights collumns in pandas / straight off stack overflow
-    # copy df to new - original data is not changed 
-    df = x.copy() 
-    # select all values to blue color 
-    df.loc[:, :] = 'background-color: blue'
-    # overwrite values grey color 
-    df[['Jan', 'Feb',  'Mar',  'Apr',  'May',  'Jun',  'Jul',  'Aug',  'Sep', 'Oct',  'Nov', 'Dec', 'YTD']] = 'background-color: orange'
-    # return color df 
-    return df  
-
 def scatter_plot(results_list):
     results_df = results_to_df(results_list)
     xaxis_vol = []
@@ -241,36 +196,9 @@ def scatter_plot(results_list):
                             )
     
     return fig
-    
-def alloc_table(stock_list, percent_list, rebalance_trigger_list):
-    for i in range(len(stock_list)):
-        stock_list[i]= stock_list[i].upper()
-
-    headerColor = 'black'
-    fig = go.Figure(data=[go.Table(
-                                header=dict(values=['', 'Target Allocation', 'Rebalance'],
-                                            line_color= 'white',
-                                            fill_color=headerColor,
-                                            align=['left','center'],
-                                            font=dict(color='white', size=12)),
-                                cells=dict(values=[stock_list, percent_list, rebalance_trigger_list],
-                                            line_color = 'white',
-                                            font = dict(color = 'black'),
-                                            fill = dict(color=['white', '#a2a4a8', 'white']))) ])
-    fig.update_layout(margin = dict(l=0, r=20, t=20, b=0))
-    return fig
-
-def sum_table(rebalance_type, weight_band):
-    axis = ["Initial Investment", "Rebalance", "Weight Band"]
-    fig = go.Figure(data=go.Table(
-                            cells = dict(values = [axis, ["$100.00", rebalance_type, weight_band]],
-                            line_color = 'black',
-                            font = dict(color = 'black'),
-                            fill_color = 'white')))
-    return fig
 
 def balance_table(results, results_con):
-    labels = ['Strategy', 'Initial Investment', 'Final Balance']
+    labels = ['<b>Strategy<b>', '<b>Initial Investment<b>', '<b>Final Balance<b>']
     series_res = results._get_series(None).rebase()
     series_con = results_con._get_series(None).rebase()
     final_res = round(series_res.iloc[-1])
@@ -282,14 +210,14 @@ def balance_table(results, results_con):
     #st.write(name)
     fig = go.Figure(data=[go.Table(
                                 header=dict(values= labels,
-                                            line_color= 'black',
-                                            fill_color= '#131c4f',
+                                            line_color= onramp_colors["gray"],
+                                            fill_color= onramp_colors['gray'],
                                             align=['center','center'],
-                                            font=dict(color='white', size=10)),
+                                            font=dict(color='black', size=11)),
                                 cells=dict(values=[['60-40 Portfolio', series_res.columns[0]], ["$100", "$100"], [final_con, final_res]],
-                                            line_color = 'black',
-                                            font = dict(color = 'black', size = 11),
-                                            fill_color = '#f7f7f7' )) ])
+                                            line_color = onramp_colors["gray"],
+                                            font = dict(color = 'white', size = 11),
+                                            fill_color = onramp_colors["dark_blue"] )) ])
     fig.update_layout(
             {
                 "plot_bgcolor": "rgba(0, 0, 0, 0)",  # Transparent
@@ -305,7 +233,7 @@ def short_stats_table(results_list):
     stats_1 = results_list[1].display_lookback_returns()   #make them into a nice table
 
 
-    labels= ["Stats", stats_0.columns[0], "60-40 Portfolio", "Difference"]
+    labels= ["<b>Stats<b>", '<b>'+ stats_0.columns[0] + '<b>', "<b>60-40 Portfolio<b>", "<b>Difference<b>"]
 
     #combining 
     stats_combined = pd.concat([stats_0, stats_1], axis=1)
@@ -318,15 +246,15 @@ def short_stats_table(results_list):
 
     fig = go.Figure(data=[go.Table(
                             header=dict(values= labels,
-                                        line_color= 'black',
-                                        fill_color= '#131c4f',
+                                        line_color= onramp_colors["gray"],
+                                        fill_color= onramp_colors["gray"],
                                         align=['center','center'],
-                                        font=dict(color='white', size=10)),
+                                        font=dict(color='black', size=10)),
                             cells=dict(values=[stats_combined.index, stats_combined.Your_Strategy, stats_combined.Portfolio6040, stats_combined.Difference],
-                                        line_color = 'black',
+                                        line_color = onramp_colors["gray"],
                                         height = 30,
-                                        font = dict(color = 'black'),
-                                        fill_color = '#f7f7f7' )) ])
+                                        font = dict(color = 'white'),
+                                        fill_color = onramp_colors["dark_blue"] )) ])
     fig.update_layout(
             {
                 "plot_bgcolor": "rgba(0, 0, 0, 0)",  # Transparent
@@ -602,19 +530,19 @@ def stats_table(results_list):
     #creates a datframe with exactly what we need
     df = pd.DataFrame(list(zip(stats_col, strat1_col, strat2_col)), 
                columns =['Stats', 'Your_Strategy', 'Portfolio6040'])
-    labels = ['Stats', stats_combined.iloc[0][1], "60-40 Portfolio"]
+    labels = ['<b>Stats<b>', '<b>' +stats_combined.iloc[0][1] + '<b>', "<b>60-40 Portfolio<b>"]
     
     fig = go.Figure(data=[go.Table(
                             header=dict(values= labels,
-                                        line_color= 'black',
-                                        fill_color= '#131c4f',
+                                        line_color= onramp_colors["gray"],
+                                        fill_color= onramp_colors["gray"],
                                         align=['center','center'],
-                                        font=dict(color='white', size=10)),
+                                        font=dict(color='black', size=11)),
                             cells=dict(values=[df.Stats, df.Your_Strategy, df.Portfolio6040],
-                                        line_color = 'black',
+                                        line_color = onramp_colors["gray"],
                                         height = 30,
-                                        font = dict(color = 'black'),
-                                        fill_color = '#f7f7f7' )) ])
+                                        font = dict(color = 'white'),
+                                        fill_color =  onramp_colors["dark_blue"])) ])
     fig.update_layout(margin = dict(l=2, r=0, t=0, b=10), 
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",)
