@@ -1,5 +1,6 @@
 import dash
 from dash_bootstrap_components._components.CardBody import CardBody
+from dash_bootstrap_components._components.CardHeader import CardHeader
 from dash_bootstrap_components._components.Row import Row
 import dash_core_components as dcc
 import dash_html_components as html
@@ -13,7 +14,7 @@ import bt
 import time
 from bt_algos import WeighSpecified, RebalanceAssetThreshold
 
-from functions import balance_table, monthly_table, onramp_colors, onramp_template, line_chart, scatter_plot, stats_table, short_stats_table
+from functions import balance_table, monthly_table, onramp_colors, onramp_template, line_chart, plotly_pie, scatter_plot, stats_table, short_stats_table
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP],
                 meta_tags=[{'name': 'viewport',
                             'content': 'width=device-width, initial-scale=1.0'}]
@@ -87,30 +88,10 @@ results_agg = returns[2]
 
 
 
-
-def drawFigure():
-    return  dbc.Container([
-        dbc.Card(
-            dbc.CardBody([
-                dcc.Graph(
-                    figure=px.bar(
-                        df, x="sepal_width", y="sepal_length", color="species"
-                    ).update_layout(
-                        template='plotly_dark',
-                        plot_bgcolor= 'rgba(0, 0, 0, 0)',
-                        paper_bgcolor= 'rgba(0, 0, 0, 0)',
-                    ),
-                    config={
-                        'displayModeBar': False
-                    }
-                ) 
-            ])
-        ),  
-    ])
-
 def Inputs():
 
-    inputs_ = dbc.Card(
+    inputs_ = dbc.Card([
+            dbc.CardHeader(children= html.H3("Inputs"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
             dbc.CardBody([
                 #Inputs 1 
                 dbc.Row([
@@ -248,8 +229,8 @@ def Inputs():
                     ),
                 ]),
                 
-            ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"], inverse= True,
-        )
+            ]), 
+    ], className= "text-center mb-2", style= {"height": "31rem"}, color= onramp_colors["dark_blue"], inverse= True,)
 
     return inputs_
 
@@ -265,13 +246,14 @@ def Description():
                             style = {"fontSize": "vmin" })
                             
                 
-                ]), className= "text-center mr-4 mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"], inverse= True
+                ]), className= "text-center", style= {"height": "22rem"}, color= onramp_colors["dark_blue"], inverse= True
     )
 
     return descript
 
 def DisplayPie():
-    pie = dbc.Card(
+    pie = dbc.Card([
+        dbc.CardHeader(children= html.H3("Portfolio Allocation"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
         dbc.CardBody([
             
             dcc.Loading( id = "loading_pie", children=
@@ -279,26 +261,28 @@ def DisplayPie():
                 id = "pie_chart"
             )
             )
-        ]), className= "mb-4", style= {"height": "22rem"}, color= onramp_colors["dark_blue"]
-    )
+        ]),
+    ],  className= "text-center mb-2", style= {"height": "31rem"}, color= onramp_colors["dark_blue"], inverse = True)
 
     return pie
            
 def DisplayLineChart():
-    line = dbc.Card(
+    line = dbc.Card([
+        dbc.CardHeader(children= html.H3("Portfolio Performance"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
         dbc.CardBody([
             dcc.Loading(id = "loading_line", children=
             dcc.Graph(
                 id = "line_chart",
                 style= {"responsive": True}
             ))
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
-    )
+        ]), 
+    ], className= "text-center mb-2", style= {"max-width" : "100%", "margin": "auto", "height": "31rem"}, color= onramp_colors["dark_blue"], inverse = True)
 
     return line        
 
 def DisplayScatter():
-    scat = dbc.Card(
+    scat = dbc.Card([
+        dbc.CardHeader(children= html.H3("Risk vs. Return"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
         dbc.CardBody([
             dcc.Loading(id = "loading-scatter", children=
             dcc.Graph(
@@ -306,13 +290,14 @@ def DisplayScatter():
                 style= {"responsive": True}
             )
             )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
-    )
+        ]),  
+    ], className= "text-center mb-2", style= {"max-width" : "100%", "margin": "auto", "height": "31rem"}, color= onramp_colors["dark_blue"], inverse = True)
 
     return scat        
 
 def DisplayStats():
-    stats = dbc.Card(
+    stats = dbc.Card([
+        dbc.CardHeader(children= html.H3("Performance Statistics"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
         dbc.CardBody([
             dcc.Loading(id = "loading_stats", children=
             dcc.Graph(
@@ -320,13 +305,14 @@ def DisplayStats():
                 style= {"responsive": True}
             )
             )
-        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
-    )
+        ]),  
+    ], className= "text-center mb-2", style= {"max-width" : "100%", "margin": "auto", "height": "31rem"}, color= onramp_colors["dark_blue"], inverse = True)
 
     return stats        
 
 def DisplayReturnStats():
-    stats = dbc.Card(
+    stats = dbc.Card([
+        dbc.CardHeader(children= html.H3("Returns Recap"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
         dbc.CardBody([
             dcc.Loading(id = "loading_return1", children= 
                 dcc.Graph(
@@ -342,13 +328,14 @@ def DisplayReturnStats():
             )
             
                             
-        ]),  className= "mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "30rem"}, color= onramp_colors["dark_blue"]
-    )
+        ])
+    ],  className= "text-center mb-2", style= {"max-width" : "100%", "margin": "auto", "height": "31rem"}, color= onramp_colors["dark_blue"], inverse = True)
 
     return stats      
 
 def DisplayMonthTable():
-    stats = dbc.Card(
+    stats = dbc.Card([
+        dbc.CardHeader(children= html.H3("Returns Breakdown"), style = {"font": "Roboto", "color": onramp_colors["gray"]}),
         dbc.CardBody([
             dcc.Loading( id = "loading_month", children=
             dcc.Graph(
@@ -356,8 +343,8 @@ def DisplayMonthTable():
                 style= {"responsive": True}
             )
             )
-        ]),  className= "mr-4 mb-4", style= {"max-width" : "100%", "margin": "auto", "height": "50rem"}, color= onramp_colors["dark_blue"]
-    )
+        ])
+    ],  className= "text-center", style= {"max-width" : "100%", "margin": "auto", "height": "57rem"}, color= onramp_colors["dark_blue"], inverse = True)
 
     return stats        
 
@@ -370,164 +357,86 @@ app.layout = dbc.Container([
     dbc.Row(
         dbc.Col(
             dbc.Card(
-                dbc.CardBody("Custom Strategy Dashboard"), 
-            className="text-center mb-4", color= onramp_colors["dark_blue"], inverse= True,), 
+                dbc.CardBody([
+                    html.H1(children="Custom Strategy Dashboard", style = {"color": onramp_colors["gray"]}), 
+                    
+                    html.P(children= "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannotavoid mediating disputes.", 
+                            style = {"fontSize": "vmin", "color": onramp_colors["gray"]}),
+                            
+                    html.P(children= "Commerce on the Internet has come to rely almost exclusively on financial institutions serving as trusted third parties to process electronic payments. While the system works well enough for most transactions, it still suffers from the inherent weaknesses of the trust based model. Completely non-reversible transactions are not really possible, since financial institutions cannotavoid mediating disputes.",
+                            style = {"fontSize": "vmin", "color": onramp_colors["gray"] })
+                ]),
+            className="text-center mb-2", color= onramp_colors["dark_blue"], inverse= True,), 
         width = 12)
     ),
 
     
-    # Inputs | Description | Pie Chart 
+    # Inputs | Pie Chart | Line Chart
     dbc.Row([
         
         dbc.Col([
             dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        dbc.CardBody("Dashboard Description"), 
-                        className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-                #xs = 12, sm = 12, md = 6, lg = 6, xl = 6 
-                ),
-            ),
-            dbc.Row(
                 dbc.Col([
-                    Description()
+                    Inputs()
                 ],  ),
             ),
-        ], xs = 12, sm = 12, md = 12, lg = 6, xl = 6),
+        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3),
 
         dbc.Col([
             
             dbc.Row([
-                dbc.Col(
-                dbc.Card(
-                    dbc.CardBody("Inputs"), 
-                    className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-            #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
-            ),
-            ]),
-            dbc.Row([
                 dbc.Col([
-                    Inputs()
+                    DisplayPie()
                 ],  ),
             ]),
         ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3),
         dbc.Col([
             dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        dbc.CardBody("Portfolio Allocation"), 
-                        className= "text-center mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-                #xs = 12, sm = 12, md = 3, lg = 3, xl = 3 
-                ),
-            ),
-            dbc.Row(
-                dbc.Col([
-                    DisplayPie()
-                ]),
-            )
-        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3 )
-    ]),
-
-    #Line Chart | Scatter Plot | Stats Table 
-    dbc.Row([
-        dbc.Col([
-            dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        dbc.CardBody("Portfolio Performance"), 
-                        className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-                #width = 5
-                ),
-            ),
-            dbc.Row(
                 dbc.Col([
                     DisplayLineChart()
-                ],),
-            ),
-        ], xs = 12, sm = 12, md = 12, lg = 5, xl = 5),
+                ]),
+            )
+        ], xs = 12, sm = 12, md = 12, lg = 6, xl = 6 )
+    ]),
 
-
+    # Stats | Scatter Plot | Return Recap
+    dbc.Row([
         dbc.Col([
-            dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        dbc.CardBody("Risk Vs. Return"), 
-                        className= "text-center mr-4 mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-                #width = 4
-                ),
-            ),
             dbc.Row(
                 dbc.Col([
                     DisplayScatter()
                 ],),
             ),
         ], xs = 12, sm = 12, md = 12, lg = 4, xl = 4),
-        
+
+
         dbc.Col([
             dbc.Row(
-                dbc.Col(
-                dbc.Card(
-                    dbc.CardBody("Performance Statistics"), 
-                    className= "text-center mb-4", color= onramp_colors["dark_blue"], inverse= True,),
-            #width = 3
+                dbc.Col([
+                    DisplayReturnStats()
+                    
+                ],),
             ),
-            ),
+        ], xs = 12, sm = 12, md = 12, lg = 4, xl = 4),
+        
+        dbc.Col([
             dbc.Row(
                 dbc.Col([
                     DisplayStats()
                 ]),
-            )
-        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3)
+            ),
+        ], xs = 12, sm = 12, md = 12, lg = 4, xl = 4)
     ]),
 
-    #Column Headers Returns Breakdown Returns Recap 
-    # dbc.Row([
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Returns Breakdown"), 
-    #             className= "text-center mr-4 mb-4"),
-    #     width = 9
-    #     ),
-
-    #     dbc.Col(
-    #         dbc.Card(
-    #             dbc.CardBody("Returns Recap"), 
-    #             className= "text-center mr-4 mb-4"),
-    #     width = 3
-    #     ),
-    # ]), 
-
+    
     dbc.Row([
         dbc.Col([
             dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        dbc.CardBody("Returns Breakdown"), 
-                        className= "text-center mr-4 mb-4 shadow-lg rounded", color= onramp_colors["dark_blue"], inverse= True,),
-                #width = 9
-                ),
-            ),
-            dbc.Row(
                 dbc.Col([
-                    DisplayMonthTable()
+                    DisplayMonthTable(),
                 ]),
             ),
-        ], xs = 12, sm = 12, md = 12, lg = 9, xl = 9),
-        
-        dbc.Col([
-            dbc.Row(
-                dbc.Col(
-                    dbc.Card(
-                        dbc.CardBody("Returns Recap"), 
-                        className= "text-center mb-4 ", color= onramp_colors["dark_blue"], inverse= True,),
-                ),
-            ),
-            dbc.Row(
-                dbc.Col([
-                    DisplayReturnStats()
-                ]),
-            )
-        ], xs = 12, sm = 12, md = 12, lg = 3, xl = 3)
+        ], xs = 12, sm = 12, md = 12, lg = 12, xl = 12),
     ]),
 ], fluid=True)
 
@@ -562,7 +471,8 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
     stock_list_pie = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
     percent_list = [float(alloc1)/100, float(alloc2)/100, float(alloc3)/100, float(alloc4)/100]
 
-    fig = px.pie( values = percent_list, names = stock_list_pie, color = stock_list_pie, title="Portfolio Allocation", template= onramp_template, hole = .3, height = 300)
+    fig = plotly_pie(stock_list_pie, percent_list)
+    #px.pie( values = percent_list, names = stock_list_pie, color = stock_list_pie, title="", template= onramp_template, hole = .3, height = 300)
     
     ##################################################### SETTING UP DATA #############################################################################################
     stock_choice_1 = stock_choice_1.lower()
@@ -585,26 +495,13 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
     stock_choice_3 = stock_choice_3.replace('-', '')
     stock_choice_4 = stock_choice_4.replace('-', '')
 
-
-    #Makes strategy name not include usd
-    stock_list_strat = [stock_choice_1, stock_choice_2, stock_choice_3, stock_choice_4]
-    your_strategy = "" 
-
-    for i in range(len(stock_list_strat)):
-        if("usd" in stock_list_strat[i]):
-            your_strategy += stock_list_strat[i].replace('usd', '').upper()
-        else:
-            your_strategy += stock_list_strat[i].upper()
-        your_strategy += '-'
-
-    your_strategy = your_strategy[0:-1]
     
     stock_dic = {stock_choice_1: float(alloc1)/100, stock_choice_2: float(alloc2)/100, stock_choice_3: float(alloc3)/100, stock_choice_4: float(alloc4)/100} #dictonary for strat
     
     if(rebalance == None or rebalance == ""):
         rebalance = 1.2
     rebalance = float(rebalance)
-    strategy_ = bt.Strategy(your_strategy, 
+    strategy_ = bt.Strategy("Custom Strategy", 
                               [ 
                               bt.algos.RunDaily(),
                               bt.algos.SelectAll(), 
@@ -629,7 +526,7 @@ def update_graph(num_click, stock_choice_1, alloc1, stock_choice_2, alloc2, stoc
 
     fig_month_table = monthly_table(results_list)
 
-    fig_month_table.update_layout(height = 760)
+    fig_month_table.update_layout(height = 780)
 
     fig_balance_table = balance_table(results, results_control)
 

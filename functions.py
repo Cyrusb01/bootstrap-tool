@@ -6,11 +6,11 @@ import bt
 from tabulate import tabulate
 import plotly.graph_objects as go
 
-strategy_color = '#A90BFE'
-P6040_color = '#FF7052'
-spy_color = '#66F3EC'
-agg_color = '#67F9AF'
-colors = [strategy_color, P6040_color, spy_color, agg_color, '#EF5BDA', '#3527F5', '#F28585', '#43F22D', '#F1F040']
+# strategy_color = '#A90BFE'
+# P6040_color = '#FF7052'
+# spy_color = '#66F3EC'
+# agg_color = '#67F9AF'
+# colors = [strategy_color, P6040_color, spy_color, agg_color, '#EF5BDA', '#3527F5', '#F28585', '#43F22D', '#F1F040']
 
 
 onramp_colors = {
@@ -52,7 +52,7 @@ onramp_font_family = "Roboto"
 onramp_legend = {
     "orientation": "h",
     "yanchor": "bottom",
-    "y": -.5,
+    "y": -.3,
     "xanchor": "left",
     "x": 0,
     "font": {"size": 15, "color": onramp_colors["gray"]},
@@ -61,8 +61,8 @@ onramp_legend = {
 onramp_margins = {
     "l": 30,
     "r": 10,
-    "t": 45,
-    "b": 15,
+    "t": 0,
+    "b": 140,
 }  # Set top margin to in case there is a legend
 
 
@@ -83,7 +83,6 @@ onramp_layout = go.Layout(
 onramp_template = dict(layout=go.Layout(onramp_layout))
 
 def line_chart(results_list):
-    color_dict = {}
     result_final = pd.DataFrame()
     for i in range(len(results_list)):
 
@@ -92,7 +91,7 @@ def line_chart(results_list):
         #color_dict[result_final.columns[i]] = colors[i] #colors
 
     fig = px.line(result_final, labels=dict(index="Click Legend Icons to Toggle Viewing", value="", variable=""),
-                    title="Portfolio Performance",
+                    title="",
                     template= onramp_template
                     #height = 350
                     )
@@ -100,45 +99,20 @@ def line_chart(results_list):
     fig.update_yaxes( # the y-axis is in dollars
         tickprefix="$"
     )
-
-    # x = .82
-    # fig.update_layout(legend=dict(
-    #     orientation="h",
-    #     yanchor="bottom",
-    #     y= -.25,
-    #     xanchor="right",
-    #     x=.82
-    # ),
-    # title={
-    #         'text': "Portfolio Performance",
-    #         'y':.99,
-    #         'x':0.5,
-    #         'xanchor': 'center',
-    #         'yanchor': 'top'},)
-    # #fig.update_layout(height = 500)
-    # fig.update_layout(margin = dict(l=0, r=0, t=20, b=10))
+    fig.update_layout(
+        legend = {
+            "xanchor": "left",
+            "x": .2,
+        }  
+    )
     return fig
 
-def plotly_pie(stock_list, percent_list, pie_colors = ['#66F3EC', '#67F9AF', '#F9C515']):
+def plotly_pie(stock_list, percent_list):
     
-    fig = px.pie( values = percent_list, names = stock_list, color = stock_list,
-                            color_discrete_sequence= pie_colors,
-                            title="Portfolio Allocation")
-    fig.update_layout(
-    title={
-        'text': "Portfolio Allocation",
-        'y':0.87,
-        'x':0.49,
-        'xanchor': 'center',
-        'yanchor': 'top'},
-    legend=dict(
-    orientation="h",
-    yanchor="bottom",
-    y=-.3,
-    xanchor="left",
-    x=0.0))
+    fig = px.pie( values = percent_list, names = stock_list, color = stock_list, template = onramp_template, hole = .3)
     
-    fig.update_traces(marker=dict(line=dict(color='white', width=1.3)))
+    
+    #fig.update_traces(marker=dict(line=dict(color='white', width=1.3)))
     
 
     return fig
@@ -190,7 +164,7 @@ def scatter_plot(results_list):
                             "y": "Monthly Mean (ann.) %",
                             "color" : ""
                             },
-                            title="Risk Vs. Return", 
+                            title="", 
                             template= onramp_template,
                             #width = 530, height = 350
                             )
@@ -224,7 +198,7 @@ def balance_table(results, results_con):
                 "paper_bgcolor": "rgba(0, 0, 0, 0)",
             }
         )
-    fig.update_layout(margin = dict(l=1, r=0, t=0, b=0))
+    fig.update_layout(margin = dict(l=1, r=1, t=0, b=0))
     
     return fig
 
@@ -261,7 +235,7 @@ def short_stats_table(results_list):
                 "paper_bgcolor": "rgba(0, 0, 0, 0)",
             }
         )
-    fig.update_layout(margin = dict(l=2, r=0, t=0, b=0))
+    fig.update_layout(margin = dict(l=2, r=1, t=0, b=0))
     return fig
 
 def monthly_table(results_list):
@@ -434,7 +408,7 @@ def monthly_table(results_list):
                                         height = 30,
                                         font = dict(color = [font_color_list*14]),
                                         fill_color = [color_list] )) ])
-    fig.update_layout(margin = dict(l=0, r=0, t=0, b=0))
+    fig.update_layout(margin = dict(l=0, r=0, t=1, b=0))
 
 
     return fig
@@ -543,7 +517,7 @@ def stats_table(results_list):
                                         height = 30,
                                         font = dict(color = 'white'),
                                         fill_color =  onramp_colors["dark_blue"])) ])
-    fig.update_layout(margin = dict(l=2, r=0, t=0, b=10), 
+    fig.update_layout(margin = dict(l=2, r=1, t=0, b=10), 
             paper_bgcolor="rgba(0,0,0,0)",
             plot_bgcolor="rgba(0,0,0,0)",)
 
